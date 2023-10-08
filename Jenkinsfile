@@ -14,7 +14,7 @@ pipeline {
     }
     stage('Code Analysis with SonarQube') {
       environment {
-        SONAR_URL = "http://65.0.129.24:9000"
+        SONAR_URL = "http://13.232.51.206:9000"
       }
       steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
@@ -24,14 +24,14 @@ pipeline {
     }
     stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "maheshkuligod07/mycicd:${BUILD_NUMBER}"
-        REGISTRY_CREDENTIALS = credentials('dockerHub')
+        DOCKER_IMAGE = "maheshkuligod07/java_awesome-cicd:${BUILD_NUMBER}"
+        REGISTRY_CREDENTIALS = credentials('dockerhub')
       }
       steps {
         script {
             sh 'docker build -t ${DOCKER_IMAGE} .'
             def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "dockerHub") {
+            docker.withRegistry('https://index.docker.io/v1/', "dockerhub") {
                 dockerImage.push()
             }
         }
@@ -46,11 +46,11 @@ pipeline {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
                     git config user.email "maheshkuligod007@gmail.com"
-                    git config user.name "MAahesh kuligod"
+                    git config user.name "Mahesh"
                     BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" manifests/deployment.yml
                     git add manifests/deployment.yml
-                    git add target/
+                    //git add target/
                     git commit -m "Update image version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''
