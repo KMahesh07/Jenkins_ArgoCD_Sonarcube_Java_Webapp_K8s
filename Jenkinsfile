@@ -48,7 +48,7 @@ pipeline {
                     git config user.email "maheshkuligod007@gmail.com"
                     git config user.name "Mahesh"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" manifests/deployment.yml
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins_ArgoCD_Sonarcube_Java_Webapp_K8s/manifests/deployment.yml
                     git add manifests/deployment.yml
                     git add target/
                     git commit -m "Update image version ${BUILD_NUMBER}"
